@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Последняя компиляция и сжатый CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Дополнение к теме -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body>
+<h1>sdfjs</h1>
+
+<h3>File Upload:</h3>
+Select a file to upload: <br />
+
+<form action = "http://localhost:3000/file_upload" method = "POST" id="uploadForm" enctype = "multipart/form-data">
+    <input type="file" name="file" size="50" />
+    <br />
+    <select id="typeSheet" name="sheet">
+        <option value="0">АНОНС</option>
+        <option value="1">ВЕЛОСИПЕДЫ</option>
+        <option value="2">СПОРТ_ТУРИЗМ</option>
+        <option value="3">ЗАПЧАСТИ</option>
+        <option value="4">ИГРУШКА</option>
+        <option value="5">ИТОГ</option>
+        <option value="6">ОБЩИЙ_ЗАКАЗ</option>
+        <option value="7">наличие на складе</option>
+    </select>
+    <br/>
+    <input type = "button" id="get" value = "Upload File" />
+</form>
+<span id = "status">asd</span>
+
+<button id="test">defsds</button>
+
+
+<!-- Последняя компиляция и сжатый JavaScript -->
+<script src="pagination.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- на jQuery (необходим для Bootstrap - х JavaScript плагины) -->
+<script src="jquery-3.3.1.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+        $('#get').click(function () {
+            alert('z nen');
+            // var sheet = document.getElementById("typeSheet");
+            // console.log(sheet);
+            var fd = new FormData(document.getElementById("uploadForm"));
+            // fd.append('sheet', sheet);
+            console.log(fd.get('sheet'));
+            $.ajax({
+                url: '/file_upload',
+                data: fd,
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var t = JSON.parse(data);
+                    // alert(t);
+                }
+            });
+        });
+
+        $('#status').click(function () {
+           alert('z nen');
+        });
+        $('#test').click(function () {
+            alert('z nen');
+        });
+        alert('asdasd');
+    });
+
+</script>
+</body>
+</html>
