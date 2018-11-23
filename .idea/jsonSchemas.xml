@@ -15,6 +15,9 @@
                   <Item>
                     <option name="path" value="server/hello.json" />
                   </Item>
+                  <Item>
+                    <option name="path" value="server/ИГРУШКАnew.json" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>

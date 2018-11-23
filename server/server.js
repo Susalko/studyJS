@@ -14,17 +14,19 @@ var url = require('url');
 var promise = require('bluebird');
 var multiparty = require('multiparty');
 var app = express();
-
+var sheetNames = ["АНОНС", "ВЕЛОСИПЕДЫ", "СПОРТ_ТУРИЗМ", "ЗАПЧАСТИ", "ИГРУШКА", "ИТОГ", "ОБЩИЙ_ЗАКАЗ", "наличие на складе"];
 
 // drive = google.drive({version: 'v3'});
 app.use('/page', express.static('page'));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb', extended: true}))
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 app.use(busboy());
 
 
 
 app.get("/", function(request, response){
-compleateJson();
+// compleateJson();
     // отправляем ответ
 
     response.send('param');
@@ -44,7 +46,18 @@ app.post('/file_upload', function (req, res) {
             if (err) throw err;
 
         });
-        res.json(parce12(newpath));
+        console.log(fields['sheet']);
+        // parce12(newpath, sheetNames[fields['sheet']]);
+        // res.writeHead(200, {"Content-Type": "text/json"});
+        // res.setHeader('Content-Type', 'application/json');
+
+        var data = parce12(newpath, sheetNames[fields['sheet']]);
+        res.set({ 'content-type': 'application/json; charset=utf-8' });
+        // res.json(data);
+        // JSON.parse(data);
+        // res.json({'name':12});
+        // res.status(200).end(JSON.stringify(data));
+        res.status(200).json(data);
     });
     console.log('=========================================');
     // console.log(result);
@@ -91,15 +104,15 @@ var XLSX = require('xlsx');
 
 
 // console.log(workbook.Sheets[sheet_name_list[4]]["!cols"][0]);
-function parce12(path) {
+function parce12(path, sheetName1) {
     var workbook = XLSX.readFile(path);
     var sheet_name_list = workbook.SheetNames;
     var sheets12 = {};
     var data = [];
 //готовая функция
-    sheet_name_list.forEach(function (y) {
-        console.log(y);
-        var worksheet = workbook.Sheets[y];
+//     sheet_name_list.forEach(function (sheetName1) {
+        console.log(sheetName1);
+        var worksheet = workbook.Sheets[sheetName1];
         var headers = {};
 
         // console.log(worksheet["!cols"]);
@@ -140,61 +153,39 @@ function parce12(path) {
         data.shift();
         data.shift();
         data.shift();
-        sheets12[y] = data;
+        // sheets12 = data;
         // console.log(sheets);
-        // fs.writeFile(y + ".json", JSON.stringify(data));
-    });
-    return sheets12;
+        fs.writeFile(sheetName1 + "new.json", JSON.stringify(data));
+    // });
+    // console.log(sheets12['ССЫЛКА']);
+    var sheet122 = compleateJson(data);
+
+    return sheet122;
+
+    // return sheets12;
 }
 
-function compleateJson() {
+function compleateJson(sheetReplace) {
     var i = 0;
-    var excel = JSON.parse(fs.readFileSync('hello.json', 'utf-8'));
-    console.log(excel.length);
-    for (var sheet in excel){
-
-             console.log(excel[sheet].length);
-             for (var row in excel['ИГРУШКА']){
+             for (var row in sheetReplace){
                  var tmpId = '';
-                 if (excel[sheet][row]['ССЫЛКА']){
-                     excel[sheet][row]['ССЫЛКА'] = excel[sheet][row]['ССЫЛКА'].replace('/view', '');
-                     if (excel[sheet][row]['ССЫЛКА'].lastIndexOf('=') > 0) {
-                         tmpId = excel[sheet][row]['ССЫЛКА'].slice(excel[sheet][row]['ССЫЛКА'].lastIndexOf('=') + 1);
-                         console.log('id = ' + excel[sheet][row]['ССЫЛКА'].slice(excel[sheet][row]['ССЫЛКА'].lastIndexOf('=') + 1));
+                 if (sheetReplace[row]['ССЫЛКА']){
+                     sheetReplace[row]['ССЫЛКА'] = sheetReplace[row]['ССЫЛКА'].replace('/view', '');
+                     if (sheetReplace[row]['ССЫЛКА'].lastIndexOf('=') > 0) {
+                         tmpId = sheetReplace[row]['ССЫЛКА'].slice(sheetReplace[row]['ССЫЛКА'].lastIndexOf('=') + 1);
+                         sheetReplace[row]['ССЫЛКА'] = tmpId;
+                         // console.log('id = ' + sheetReplace[row]['ССЫЛКА'].slice(sheetReplace[row]['ССЫЛКА'].lastIndexOf('=') + 1));
                      } else {
-                         tmpId = excel[sheet][row]['ССЫЛКА'].slice(excel[sheet][row]['ССЫЛКА'].lastIndexOf('/') + 1);
-                         console.log('id = ' + excel[sheet][row]['ССЫЛКА'].slice(excel[sheet][row]['ССЫЛКА'].lastIndexOf('/') + 1));
+                         tmpId = sheetReplace[row]['ССЫЛКА'].slice(sheetReplace[row]['ССЫЛКА'].lastIndexOf('/') + 1);
+                         sheetReplace[row]['ССЫЛКА'] = tmpId;
+                         // console.log('id = ' + sheetReplace[row]['ССЫЛКА'].slice(sheetReplace[row]['ССЫЛКА'].lastIndexOf('/') + 1));
                      }
 
-                     console.log('=====' + excel[sheet][row]['ССЫЛКА'].lastIndexOf('='));
-                    console.log('//////' + excel[sheet][row]['ССЫЛКА'].lastIndexOf('/'));
-                 console.log('№' + i + ' = ' + excel[sheet][row]['ССЫЛКА']);
-
-                     var timeoutScheduled = Date.now();
-
-                     setTimeout(function () {
-
-                         var delay = Date.now() - timeoutScheduled;
-
-                         console.log(delay + "ms have passed since I was scheduled");
-                     }, 10000);
-                     someAsyncOperation (tmpId, excel[sheet][row]['ID'], function () {
-
-                         var startCallback = Date.now();
-                        console.log('я тут');
-                         // выполнить что-то, что займёт 10мс...
-                         while (Date.now() - startCallback < 10000) {
-                             ; // ничего не делать
-                         }
-
-                     });
                  }
 
                  i++;
              }
-
-    }
-    console.log('endFunction');
+    return sheetReplace;
 }
 
 https://drive.google.com/open?id=0B5mDNI2flaG1MnJWc2xkOVBKMDA
