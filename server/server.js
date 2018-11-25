@@ -57,6 +57,7 @@ app.post('/file_upload', function (req, res) {
         // JSON.parse(data);
         // res.json({'name':12});
         // res.status(200).end(JSON.stringify(data));
+        console.log(data[0]);
         res.status(200).json(data);
     });
     console.log('=========================================');
@@ -140,6 +141,7 @@ function parce12(path, sheetName1) {
             if (row == 5 && value) {
                 headers[col] = value;
                 continue;
+                continue;
             }
 
             if (!data[row]) data[row] = {};
@@ -155,7 +157,7 @@ function parce12(path, sheetName1) {
         data.shift();
         // sheets12 = data;
         // console.log(sheets);
-        fs.writeFile(sheetName1 + "new.json", JSON.stringify(data));
+        // fs.writeFile(sheetName1 + "new.json", JSON.stringify(data));
     // });
     // console.log(sheets12['ССЫЛКА']);
     var sheet122 = compleateJson(data);
@@ -188,7 +190,7 @@ function compleateJson(sheetReplace) {
     return sheetReplace;
 }
 
-https://drive.google.com/open?id=0B5mDNI2flaG1MnJWc2xkOVBKMDA
+// https://drive.google.com/open?id=0B5mDNI2flaG1MnJWc2xkOVBKMDA
 // fs.writeFile("hello.json", JSON.stringify(sheets12));
 // console.log(sheet_name_list);
 /**
@@ -308,7 +310,7 @@ downloadcv('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=
 // };
 
 
-function someAsyncOperation (tmpId, i, callback) {
+/*function someAsyncOperation (tmpId, i, callback) {
     // Предположим, это завершится через 95мс
     var source = request('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + tmpId);
     var dest = source.pipe(fs.createWriteStream('./uploads/testImage/newteststst' + i + '.jpg'));
@@ -322,37 +324,8 @@ function someAsyncOperation (tmpId, i, callback) {
         });
     }));
     return callback;
-}
+}*/
 
-var timeoutScheduled = Date.now();
-
-setTimeout(function () {
-
-    var delay = Date.now() - timeoutScheduled;
-
-    console.log(delay + "ms have passed since I was scheduled");
-}, 1000);
-someAsyncOperation (function () {
-
-    var startCallback = Date.now();
-
-    // выполнить что-то, что займёт 10мс...
-    while (Date.now() - startCallback < 10000) {
-        ; // ничего не делать
-    }
-
-});
-// выполнить someAsyncOperation, требующую 95мс для завершения
-// download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/teststst.jpg', function () {
-//
-//     var startCallback = Date.now();
-//
-//     // выполнить что-то, что займёт 10мс...
-//     while (Date.now() - startCallback < 10000) {
-//         ; // ничего не делать
-//     }
-//
-// });
 
 
 // download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/teststst1.jpg');

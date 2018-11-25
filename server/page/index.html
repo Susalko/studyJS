@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <!-- Последняя компиляция и сжатый CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap-theme.min.css">
 
     <!-- Дополнение к теме -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 <body>
 <h1>sdfjs</h1>
@@ -34,8 +34,8 @@ Select a file to upload: <br />
 <span id = "status">asd</span>
 
 <button id="test">defsds</button>
-
-<div class="container">
+<img id="img"/>
+<!--<div class="container">
     <div class="row">
         <div class="table-responsive">
             <table class="table table-hover">
@@ -148,14 +148,43 @@ Select a file to upload: <br />
             <ul class="pagination pagination-lg pager" id="myPager"></ul>
         </div>
     </div>
+</div>-->
+<div class="container">
+    <h4>Сколько показывать</h4>
+    <div class="form-group">
+        <select name="state" id="maxRows" class="form-control" style="width: 150px">
+            <option selected value="5">5</option>
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="500" id="all">Show All</option>
+        </select>
+    </div>
+    <table id="myTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Картинка</th>
+                <th>Производитель</th>
+                <th>Наименование</th>
+                <th>Цена с НДС</th>
+                <th>Артикул</th>
+                <th>Характеристики</th>
+            </tr>
+        </thead>
+        <tbody id="data">
+        </tbody>
+    </table>
+
+<div class="pagination-container">
+    <nav>
+        <ul class="pagination"></ul>
+    </nav>
+</div>
 </div>
 
-
 <!-- Последняя компиляция и сжатый JavaScript -->
-<!--<script src="pagination.js"></script>-->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- на jQuery (необходим для Bootstrap - х JavaScript плагины) -->
-<script src="jquery-3.3.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script>
 
@@ -174,26 +203,83 @@ Select a file to upload: <br />
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    var test = data;
-                    // var t = jQuery.parseJSON(data);
-                    // alert(t);
+                    // $('#all').value = data.length;
+                    // var table = document.createElement('table');
+                    var counter = 0;
 
-                    alert(data);
-                    alert(data[0]['ССЫЛКА']);
-                    document.getElementById("img").src = 'https://drive.google.com/uc?export=download&confirm=no_antivirus&id='+ data[0]['ССЫЛКА'];
+                    var table = document.getElementById('data');
+                    alert(Object.keys(data[0]).length);
+                    for (var i = 0; i < 1000; i++) {
+                        if (Object.keys(data[0]).length > 10) {
+                            var tr = document.createElement('tr');
+                            var tdImage = document.createElement('td');
+                            var tdMark = document.createElement('td');
+                            var tdType = document.createElement('td');
+                            var tdCost = document.createElement('td');
+                            var tdArticul = document.createElement('td');
+                            var tdAbout = document.createElement('td');
+
+                            var image = document.createElement('img');
+                            image.className = 'img-thumbnail';
+                            image.style = 'width:18rem';
+                            image.src = 'https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + data[i]['ССЫЛКА'];
+
+                            var divImage = document.createElement('div');
+                            divImage.appendChild(image);
+                            // var text1 = document.createTextNode(data[0]['БЕЗНАЛ']);
+                            var textMark = document.createTextNode(data[i]['ТОРГОВАЯ МАРКА']);
+                            var textType = document.createTextNode(data[i]['НАИМЕНОВАНИЕ']);
+                            var textCost = document.createTextNode(data[i]['ЦЕНА С НДС - предоплата, BYN']);
+                            var textAbout = document.createTextNode(data[i]['ХАРАКТЕРИСТИКИ']);
+                            var textArtikul = document.createTextNode(data[i]['АРТИКУЛ']);
+
+                            tdImage.appendChild(divImage);
+                            tdMark.appendChild(textMark);
+                            tdType.appendChild(textType);
+                            tdCost.appendChild(textCost);
+                            tdArticul.appendChild(textArtikul);
+                            tdAbout.appendChild(textAbout);
+                            tr.appendChild(tdImage);
+                            tr.appendChild(tdMark);
+                            tr.appendChild(tdType);
+                            tr.appendChild(tdCost);
+                            tr.appendChild(tdArticul);
+                            tr.appendChild(tdAbout);
+
+                            table.appendChild(tr);
+                        } else {
+                            counter++;
+                        }
+                    }
+                    // document.body.appendChild(table);
+                    // for (var i = 0; i < data.length; i++){
+                    //
+                    // }
+                    // document.body.appendChild(table);
+                    alert(counter + ' = не праильных');
+
+                    $(function () {
+                        $('table tr:eq(0)').prepend('<th>ID</th>');
+                        var id = 0;
+                        $('table tr:gt(0)').each(function () {
+                            id++;
+                            $(this).prepend('<td>' + id + '</td>');
+                        });
+                    });
+
+                    $('#myTable').show();
+                    // document.getElementById("img").src = 'https://drive.google.com/uc?export=download&confirm=no_antivirus&id='+ data[0]['ССЫЛКА'];
                     // alert(t);
                 }
             });
         });
-
-        $('#myTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:4});
     });
 
 
 
     /////////////////пагинация
 
-    $.fn.pageMe = function(opts){
+    /*$.fn.pageMe = function(opts){
         var $this = this,
             defaults = {
                 perPage: 7,
@@ -293,10 +379,49 @@ Select a file to upload: <br />
             pager.children().eq(page+1).addClass("active");
 
         }
-    };
+    };*/
 
 
     ////////////////
+
+var table = '#myTable';
+$('#maxRows').on('change', function () {
+    $('.pagination').html('');
+    var trNum = 0;
+    var maxRows = parseInt($(this).val());
+    var totalRows = $(table + ' tbody tr').length;
+    $(table + ' tr:gt(0)').each(function () {
+        trNum++;
+        if (trNum > maxRows){
+            $(this).hide();
+        }
+        if (trNum <= maxRows){
+            $(this).show();
+        }
+    });
+    if (totalRows > maxRows){
+        var pagenum = Math.ceil(totalRows/maxRows);
+        for (var i = 1; i <= pagenum;){
+            $('.pagination').append('<li data-page="' + i + '">\<span>' + i++ + '<span class="sr-only">(current)</span></span>\</li>').show();
+        }
+    }
+    $('.pagination li:first-child').addClass('active');
+    $('.pagination li').on('click', function () {
+        var pageNum = $(this).attr('data-page');
+        var trIndex = 0;
+        $('.pagination li').removeClass('active');
+        $(this).addClass('active');
+        $(table + ' tr:gt(0)').each(function () {
+            trIndex++;
+            if (trIndex > (maxRows * pageNum) || trIndex <= ((maxRows * pageNum) - maxRows)) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    });
+});
+$('#myTable').hide();
     // Инициализация при загрузке страницы
 </script>
 </body>
