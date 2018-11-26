@@ -31,6 +31,17 @@ app.get("/", function(request, response){
 
     response.send('param');
 });
+const jsonParser = express.json();
+app.post('/get_file', jsonParser, function (req, res) {
+    var dataEx = {};
+console.log('пришел');
+    req.on('data', function(data)
+    {
+        dataEx = JSON.parse(data);
+    });
+    console.log(req.body);
+    res.send('good');
+});
 
 app.post('/file_upload', function (req, res) {
     console.log('=========================================');
@@ -57,7 +68,7 @@ app.post('/file_upload', function (req, res) {
         // JSON.parse(data);
         // res.json({'name':12});
         // res.status(200).end(JSON.stringify(data));
-        console.log(data[0]);
+        console.log(data[28]);
         res.status(200).json(data);
     });
     console.log('=========================================');
@@ -141,7 +152,7 @@ function parce12(path, sheetName1) {
             if (row == 5 && value) {
                 headers[col] = value;
                 continue;
-                continue;
+                // continue;
             }
 
             if (!data[row]) data[row] = {};
@@ -160,6 +171,7 @@ function parce12(path, sheetName1) {
         // fs.writeFile(sheetName1 + "new.json", JSON.stringify(data));
     // });
     // console.log(sheets12['ССЫЛКА']);
+    console.log(data[35]['ССЫЛКА'] + '  info');
     var sheet122 = compleateJson(data);
 
     return sheet122;
