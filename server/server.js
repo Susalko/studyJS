@@ -14,7 +14,12 @@ var url = require('url');
 var promise = require('bluebird');
 var multiparty = require('multiparty');
 var app = express();
+var builder = require('xmlbuilder');
+
 var sheetNames = ["АНОНС", "ВЕЛОСИПЕДЫ", "СПОРТ_ТУРИЗМ", "ЗАПЧАСТИ", "ИГРУШКА", "ИТОГ", "ОБЩИЙ_ЗАКАЗ", "наличие на складе"];
+
+
+var dataExcel = null;
 
 // drive = google.drive({version: 'v3'});
 app.use('/page', express.static('page'));
@@ -33,15 +38,87 @@ app.get("/", function(request, response){
 });
 const jsonParser = express.json();
 app.post('/get_file', jsonParser, function (req, res) {
-    var dataEx = {};
-console.log('пришел');
+        var dataEx = {};
+// console.log(req);
     req.on('data', function(data)
     {
         dataEx = JSON.parse(data);
     });
-    console.log(req.body);
-    res.send('good');
+    console.log(dataExcel[0]);
+var tmpAr = [];
+console.log(req.body.length + "  == length");
+
+    console.log("req.body["+ j + "] = " + dataExcel[2034]);
+    console.log("req.body["+ j + "] = " + dataExcel[2033]);
+    console.log("req.body["+ j + "] = " + dataExcel[2035]);
+    for(var i = 0; i < req.body.length; i++){
+        for (var j = 0; j < dataExcel.length; j++){
+            // console.log("req.body["+ j + "] = " + typeof (dataExcel[j]['АРТИКУЛ']));
+
+            if( dataExcel[j] === undefined) {
+                console.log("__________________________-------------------------------");
+                continue;
+            }
+
+                if (req.body[i] == dataExcel[j]['АРТИКУЛ']){
+                    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    // console.log(dataExcel[j]);
+                tmpAr.push(dataExcel[j]);
+                    // console.log(tmpAr[0]);
+                break;
+            }
+        }
+    }
+    // console.log(req.body + 'пришло');
+    // console.log(dataEx + 'пришло2');
+    // console.log(tmpAr[0]['ССЫЛКА'] + '  пришло2');
+
+    for(var i = 0; i < tmpAr.length; i++) {
+        (function (i, elem) {
+            setTimeout(function () {
+                download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + elem['ССЫЛКА'], './uploads/testImage/' + elem['АРТИКУЛ'] + '.jpg', function () {
+                    return true;
+                });
+                console.log(i);
+                console.log(elem);
+            }, 1500 * (i + 1));
+        })(i, tmpAr[i]);
+    }
+
+    var xml = builder.create('price-list');
+    xml.ele('item-list')
+
+        .ele('name', {'lang': 'sss'}, 'ssss').up()
+        .ele('price', 'sssss').up()
+        .ele('category', 'sssss').up()
+        .ele('author', 'sssss').up()
+        .ele('ISBN', 'ssss').up()
+        .ele('publish_date', 'sssss').end();
+
+    // fs = require('fs');
+    http://programmerblog.net/generate-xml-with-nodejs-and-mysql/
+        http://www.curtismlarson.com/blog/2018/10/03/edit-xml-node-js/
+    var xmldoc = xml.toString({ pretty: true });
+
+    fs.writeFile('./uploads/testImage/booksxml.xml', xmldoc, function(err) {
+        if(err) { return console.log(err); }
+        console.log("The file was saved!");
+
+        res.render('index');
+    });
+
+    res.status(200).json(dataEx);
 });
+
+/*(function(i, elem) {
+    setTimeout(function(){
+        download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id='+ elem, './uploads/testImage/toy' + i + '.jpg', function(){
+            return true;
+        });
+        console.log(i);
+        console.log(elem);
+    }, 1000);
+})(i, dataTest[i],);*/
 
 app.post('/file_upload', function (req, res) {
     console.log('=========================================');
@@ -62,14 +139,14 @@ app.post('/file_upload', function (req, res) {
         // res.writeHead(200, {"Content-Type": "text/json"});
         // res.setHeader('Content-Type', 'application/json');
 
-        var data = parce12(newpath, sheetNames[fields['sheet']]);
+        dataExcel = parce12(newpath, sheetNames[fields['sheet']]);
         res.set({ 'content-type': 'application/json; charset=utf-8' });
         // res.json(data);
         // JSON.parse(data);
         // res.json({'name':12});
         // res.status(200).end(JSON.stringify(data));
-        console.log(data[28]);
-        res.status(200).json(data);
+        console.log(dataExcel[28]);
+        res.status(200).json(dataExcel);
     });
     console.log('=========================================');
     // console.log(result);
@@ -211,17 +288,17 @@ function compleateJson(sheetReplace) {
  * @param filename
  * @param callback
  */
-// function download(uri, filename, callback){
-//     request.head(uri, function(err, res, body){
-//          // console.log('content-type:', res.headers['content-type']);
-//          // console.log('content-length:', res.headers['content-length']);
-//
-//         request(uri).pipe(fs.createWriteStream(filename)).on('close', function (stat) {
-//             callback(true);
-//         });
-//     });
-//     // setTimeout(download(uri, filename, callback), 5000);
-// }
+function download(uri, filename, callback){
+    request.head(uri, function(err, res, body){
+         // console.log('content-type:', res.headers['content-type']);
+         // console.log('content-length:', res.headers['content-length']);
+
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', function (stat) {
+            callback(true);
+        });
+    });
+    // setTimeout(download(uri, filename, callback), 5000);
+}
 console.log('test');
 var dataTest = ['1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP'];
 
@@ -261,38 +338,60 @@ var dataTest = ['1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN
             }
         });
     });
-}
-download12('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/sdfghj.jpg')
-    .then( ()=> console.log('downloaded file no issues...'))
-    .catch( e => console.error('error while downloading', e));*/
+}*/
+// download12('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/sdfghj.jpg')
+//     .then( ()=> console.log('downloaded file no issues...'))
+//     .catch( e => console.error('error while downloading', e));
 // for (var z = 0; z < dataTest.length; z++){
 //        setTimeout(download, 7000, 'https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + dataTest[z], './uploads/testImage/toy' + z + '.jpg', function () {
 //            console.log('done');
 //        }
 //     );
 // }
-// console.log(download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/toy.jpg', function(){
+
+for(var i = 0; i < dataTest.length; i++){
+    (function(i, elem) {
+        setTimeout(function(){
+            download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id='+ elem, './uploads/testImage/toy' + i + '.jpg', function(){
+                return true;
+            });
+            console.log(i);
+            console.log(elem);
+        }, 1000 * (i + 1));
+    })(i, dataTest[i],);
+}
+
+for(var zx = 0; zx < 5; zx++){
+    (function(zx) {
+        setTimeout(function(){
+            console.log(zx);
+        }, 1000 * (zx + 1));
+    })(zx);
+}
+
+// download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/toy2.jpg', function(){
 //     return true;
-// }));
+// });
 
 
-/*
-var downloadcv = (url, path) => new Promise((resolve, reject) => {
-    https.get(url, response => {
-        const statusCode = response.statusCode;
 
-        /!*if (statusCode !== 200) {
-            return reject('Download error!');
-        }*!/
+// var downloadcv = (url, path) => new Promise((resolve, reject) => {
+//     https.get(url, response => {
+//         const statusCode = response.statusCode;
+//
+//         if (statusCode !== 200) {
+//             return reject('Download error!');
+//         }
+//
+//         const writeStream = fs.createWriteStream(path);
+//         response.pipe(writeStream);
+//
+//         writeStream.on('error', () => reject('Error writing to file!'));
+//         writeStream.on('finish', () => writeStream.close(resolve));
+//     });}).catch(err => console.error(err));
+//
+// downloadcv('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/sdfghj.jpg');
 
-        const writeStream = fs.createWriteStream(path);
-        response.pipe(writeStream);
-
-        writeStream.on('error', () => reject('Error writing to file!'));
-        writeStream.on('finish', () => writeStream.close(resolve));
-    });}).catch(err => console.error(err));
-downloadcv('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/sdfghj.jpg');
-*/
 
 
 // var downloadnew = function(uri, filename, callback) {

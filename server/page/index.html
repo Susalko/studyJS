@@ -53,11 +53,11 @@ Select a file to upload: <br />
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>
+                <th>Артикул</th>
                 <th>Картинка</th>
                 <th>Производитель</th>
                 <th>Наименование</th>
                 <th>Цена с НДС</th>
-                <th>Артикул</th>
                 <th>Характеристики</th>
             </tr>
         </thead>
@@ -117,9 +117,9 @@ var allData = null;
                             image.className = 'img-thumbnail';
                             image.style = 'width:18rem';
                             if (data[i]['ССЫЛКА']) {
-                                image.src = 'https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + data[i]['ССЫЛКА'];
-                            } else {
                                 image.src = './no_image.png';
+                            } else {
+                                image.src = 'nnnn';
                             }
 
                             var divImage = document.createElement('div');
@@ -137,11 +137,11 @@ var allData = null;
                             tdCost.appendChild(textCost);
                             tdArticul.appendChild(textArtikul);
                             tdAbout.appendChild(textAbout);
+                            tr.appendChild(tdArticul);
                             tr.appendChild(tdImage);
                             tr.appendChild(tdMark);
                             tr.appendChild(tdType);
                             tr.appendChild(tdCost);
-                            tr.appendChild(tdArticul);
                             tr.appendChild(tdAbout);
 
                             table.appendChild(tr);
@@ -233,6 +233,7 @@ $('#myTable').hide();
     $('button').click(function(){
         console.log(allData);
         var vals = [];
+        var tmp = null;
         $('#myTable tr').filter(':has(:checkbox:checked)').find('.ss').each(function() {
             //get row values
 
@@ -244,15 +245,16 @@ $('#myTable').hide();
         });
         $.ajax({
             url: '/get_file',
-            data: vals,
+            data: JSON.stringify(vals),
             method: 'POST',
-            processData: false,
-            contentType: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
             success: function (data) {
-                alert('good');
+                tmp = data;
             }
         });
         console.log(vals);
+        console.log(tmp);
     });
 </script>
 </body>
