@@ -76,7 +76,7 @@ console.log(req.body.length + "  == length");
     for(var i = 0; i < tmpAr.length; i++) {
         (function (i, elem) {
             setTimeout(function () {
-                download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + elem['ССЫЛКА'], './uploads/testImage/' + elem['АРТИКУЛ'] + '.jpg', function () {
+                download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=' + elem['ССЫЛКА'], './uploads/' + elem['АРТИКУЛ'] + '.jpg', function () {
                     return true;
                 });
                 console.log(i);
@@ -90,7 +90,6 @@ console.log(req.body.length + "  == length");
     for(var i = 0; i < tmpAr.length; i++) {
         xml.ele('item')
             .ele('ID', tmpAr[i]['ID']).up()
-            .ele('price', tmpAr[i][9]).up()
             .ele('articul', tmpAr[i]['АРТИКУЛ']).up()
             .ele('currency', tmpAr[i]['ЦЕНА С НДС - предоплата, BYN']).up()
             .ele('name', tmpAr[i]['НАИМЕНОВАНИЕ']).up()
@@ -104,7 +103,7 @@ console.log(req.body.length + "  == length");
    //     http://www.curtismlarson.com/blog/2018/10/03/edit-xml-node-js/
     var xmldoc = xml.toString({ pretty: true });
 
-    fs.writeFile('./uploads/testImage/booksxml.xml', xmldoc, function(err) {
+    fs.writeFile('./uploads/price.xml', xmldoc, function(err) {
         if(err) { return console.log(err); }
         console.log("The file was saved!");
 
@@ -303,8 +302,8 @@ function download(uri, filename, callback){
     });
     // setTimeout(download(uri, filename, callback), 5000);
 }
-console.log('test');
-var dataTest = ['1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP'];
+// console.log('test');
+// var dataTest = ['1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP'];
 
 
 /*function download12(url, dest) {
@@ -353,25 +352,25 @@ var dataTest = ['1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', '1oH7bAqTj1fS_qFFlOufBcRICN
 //     );
 // }
 
-for(var i = 0; i < dataTest.length; i++){
-    (function(i, elem) {
-        setTimeout(function(){
-            download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id='+ elem, './uploads/testImage/toy' + i + '.jpg', function(){
-                return true;
-            });
-            console.log(i);
-            console.log(elem);
-        }, 1000 * (i + 1));
-    })(i, dataTest[i],);
-}
+// for(var i = 0; i < dataTest.length; i++){
+//     (function(i, elem) {
+//         setTimeout(function(){
+//             download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id='+ elem, './uploads/toy' + i + '.jpg', function(){
+//                 return true;
+//             });
+//             console.log(i);
+//             console.log(elem);
+//         }, 1000 * (i + 1));
+//     })(i, dataTest[i],);
+// }
 
-for(var zx = 0; zx < 5; zx++){
-    (function(zx) {
-        setTimeout(function(){
-            console.log(zx);
-        }, 1000 * (zx + 1));
-    })(zx);
-}
+// for(var zx = 0; zx < 5; zx++){
+//     (function(zx) {
+//         setTimeout(function(){
+//             console.log(zx);
+//         }, 1000 * (zx + 1));
+//     })(zx);
+// }
 
 // download('https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1oH7bAqTj1fS_qFFlOufBcRICN8MMz0FP', './uploads/testImage/toy2.jpg', function(){
 //     return true;

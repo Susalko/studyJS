@@ -113,13 +113,13 @@ var allData = null;
                             tdArticul.className = 'ss';
                             var tdAbout = document.createElement('td');
 
-                            var image = document.createElement('img');
-                            image.className = 'img-thumbnail';
-                            image.style = 'width:18rem';
+                            var image = document.createElement('div');
+                            // image.className = 'img-thumbnail';
+                            // image.style = 'width:18rem';
                             if (data[i]['ССЫЛКА']) {
-                                image.src = './no_image.png';
+                                image.innerText = 'Картинка есть';
                             } else {
-                                image.src = 'nnnn';
+                                image.innerText = 'Картинки нет';
                             }
 
                             var divImage = document.createElement('div');
