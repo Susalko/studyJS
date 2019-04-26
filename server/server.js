@@ -85,26 +85,30 @@ console.log(req.body.length + "  == length");
         })(i, tmpAr[i]);
     }
 
-    var xml = builder.create('price-list');
-    xml.ele('item-list')
-
-        .ele('name', {'lang': 'sss'}, 'ssss').up()
-        .ele('price', 'sssss').up()
-        .ele('category', 'sssss').up()
-        .ele('author', 'sssss').up()
-        .ele('ISBN', 'ssss').up()
-        .ele('publish_date', 'sssss').end();
+    var xml = builder.create('price-list', {version: '1.0', encoding: 'UTF-8', standalone: true});
+    xml.ele('item-list').up();
+    for(var i = 0; i < tmpAr.length; i++) {
+        xml.ele('item')
+            .ele('ID', tmpAr[i]['ID']).up()
+            .ele('price', tmpAr[i][9]).up()
+            .ele('articul', tmpAr[i]['АРТИКУЛ']).up()
+            .ele('currency', tmpAr[i]['ЦЕНА С НДС - предоплата, BYN']).up()
+            .ele('name', tmpAr[i]['НАИМЕНОВАНИЕ']).up()
+            .ele('picture', 'URLPICTURE/' + tmpAr[i]['АРТИКУЛ'] + '.jpg').up()
+            .ele('barcode', tmpAr[i]['ШТРИХКОД']).end();
+    }
+    xml.ele('item-list').end();
 
     // fs = require('fs');
-    http://programmerblog.net/generate-xml-with-nodejs-and-mysql/
-        http://www.curtismlarson.com/blog/2018/10/03/edit-xml-node-js/
+   // http://programmerblog.net/generate-xml-with-nodejs-and-mysql/
+   //     http://www.curtismlarson.com/blog/2018/10/03/edit-xml-node-js/
     var xmldoc = xml.toString({ pretty: true });
 
     fs.writeFile('./uploads/testImage/booksxml.xml', xmldoc, function(err) {
         if(err) { return console.log(err); }
         console.log("The file was saved!");
 
-        res.render('index');
+        // res.render('index');
     });
 
     res.status(200).json(dataEx);
